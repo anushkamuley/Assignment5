@@ -145,6 +145,16 @@ ui <- dashboardPage(
             plotOutput("rel_plot")
           )
         )
+      ),
+      tabItem(
+        tabName = "data",
+        box(
+          title = "DIG Dataset",
+          width = 12,
+          solidHeader = TRUE,
+          status = "primary",
+          DTOutput("data_table")
+        )
       )
     )
   )
