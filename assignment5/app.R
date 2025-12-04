@@ -14,7 +14,7 @@ library(dplyr)
 library(ggplot2)
 library(DT)
 
-dashboardPage(
+ui <- dashboardPage(
   dashboardHeader(title = "DIG Trial Explorer"),
   
   dashboardSidebar(
@@ -61,5 +61,8 @@ dashboardPage(
           )
         )
       ))))
+server <- function(input, output, session) {
   
-shinyApp(ui = ui, server = server)
+}
+shinyApp(ui, server)
+
