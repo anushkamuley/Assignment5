@@ -13,6 +13,7 @@ library(shinydashboard)
 library(dplyr)
 library(ggplot2)
 library(DT)
+library(rlang)
 
 dig <- read.csv("DIG.csv") %>%
   mutate(
@@ -102,14 +103,30 @@ ui <- dashboardPage(
             width = 3,
             solidHeader = TRUE,
             status = "warning",
-            selectInput("baseline_trt", "Treatment Group:",
-                        choices = c("Both", "Placebo", "Digoxin")),
-            selectInput("baseline_sex", "Sex:",
-                        choices = c("Both", "Male", "Female")),
-            selectInput("baseline_cont", "Continuous Variable:",
-                        choices = NULL),
-            selectInput("baseline_cat", "Categorical Variable:",
-                        choices = NULL)
+            selectInput(
+              "baseline_trt",
+              "Treatment Group:",
+              choices = c("Both", levels(dig$TRTMT)),
+              selected = "Both"
+            ),
+            selectInput(
+              "baseline_sex",
+              "Sex:",
+              choices = c("Both", levels(dig$SEX)),
+              selected = "Both"
+            ),
+            selectInput(
+              "baseline_cont",
+              "Continuous Variable:",
+              choices = cont_vars,
+              selected = cont_vars[1]
+            ),
+            selectInput(
+              "baseline_cat",
+              "Categorical Variable:",
+              choices = cat_vars,
+              selected = cat_vars[1]
+            )
           ),
           box(
             title = "Continuous Variable Summary",
@@ -139,12 +156,19 @@ ui <- dashboardPage(
             width = 3,
             solidHeader = TRUE,
             status = "warning",
-            selectInput("outcome_var", "Outcome:",
-                        choices = NULL),
-            selectInput("outcome_group", "Group by:",
-                        choices = c("Treatment" = "TRTMT",
-                                    "Sex" = "SEX",
-                                    "NYHA Class" = "FUNCTCLS"))
+            selectInput(
+              "outcome_var",
+              "Outcome:",
+              choices = outcome_vars,
+              selected = outcome_vars[1]
+            ),
+            selectInput(
+              "outcome_group",
+              "Group by:",
+              choices = c("Treatment" = "TRTMT",
+                          "Sex" = "SEX",
+                          "NYHA Class" = "FUNCTCLS")
+            )
           ),
           box(
             title = "Outcome Rates by Group",
@@ -164,11 +188,24 @@ ui <- dashboardPage(
             width = 3,
             solidHeader = TRUE,
             status = "warning",
-            selectInput("xvar", "X Variable:", choices = NULL),
-            selectInput("yvar", "Y Variable:", choices = NULL),
-            selectInput("rel_colour", "Colour By:",
-                        choices = c("None", "Treatment" = "TRTMT", "Sex" = "SEX"),
-                        selected = "TRTMT"),
+            selectInput(
+              "xvar",
+              "X Variable:",
+              choices = cont_vars,
+              selected = cont_vars["Age"]
+            ),
+            selectInput(
+              "yvar",
+              "Y Variable:",
+              choices = cont_vars,
+              selected = cont_vars["Ejection fraction (%)"]
+            ),
+            selectInput(
+              "rel_colour",
+              "Colour By:",
+              choices = c("None", "Treatment" = "TRTMT", "Sex" = "SEX"),
+              selected = "TRTMT"
+            ),
             checkboxInput("add_smooth", "Add Smooth Trend Line", TRUE)
           ),
           box(
@@ -194,17 +231,7 @@ ui <- dashboardPage(
 )
 
   server <- function(input, output, session) {
-    
-    filtered <- reactive({
-      req(input$age_range, input$sex_filter, input$trt_filter)
-      dig %>%
-        filter(
-          AGE >= input$age_range[1],
-          AGE <= input$age_range[2],
-          SEX %in% input$sex_filter,
-          TRTMT %in% input$trt_filter
-        )
-    })
+
     
     output$n_patients <- renderValueBox({
       valueBox(
@@ -276,6 +303,7 @@ ui <- dashboardPage(
     })
     
     output$baseline_cont_plot <- renderPlot({
+      req(input$baseline_cont)
       var <- input$baseline_cont
       ggplot(baseline_data(), aes(x = TRTMT, y = .data[[var]])) +
         geom_boxplot() +
@@ -287,25 +315,30 @@ ui <- dashboardPage(
     })
     
     output$baseline_cont_table <- renderDataTable({
+      req(input$baseline_cont)
       var <- input$baseline_cont
       baseline_data() %>%
         group_by(TRTMT) %>%
         summarise(
           n = n(),
           mean = mean(.data[[var]], na.rm = TRUE),
-          sd = sd(.data[[var]], na.rm = TRUE)
+          sd = sd(.data[[var]], na.rm = TRUE),
+          .groups="drop"
         )
     })
     
     output$baseline_cat_plot <- renderPlot({
+      req(input$baseline_cat)
       var <- input$baseline_cat
       ggplot(baseline_data(), aes(x = .data[[var]], fill = TRTMT)) +
         geom_bar(position = "fill") +
         scale_y_continuous(labels = scales::percent_format()) +
-        labs(x = names(cat_vars)[cat_vars == var], y = "Proportion")
+        labs(x = names(cat_vars)[match(var,cat_vars)], 
+             y = "Proportion")
     })
     
     output$baseline_cat_table <- renderDataTable({
+      req(input$baseline_cat)
       var <- input$baseline_cat
       baseline_data() %>%
         count(TRTMT, !!sym(var)) %>%
