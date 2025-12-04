@@ -279,7 +279,11 @@ ui <- dashboardPage(
       var <- input$baseline_cont
       ggplot(baseline_data(), aes(x = TRTMT, y = .data[[var]])) +
         geom_boxplot() +
-        labs(x = "Treatment group", y = names(cont_vars)[cont_vars == var])
+        labs(
+          x = "Treatment group",
+          y = names(cont_vars)[match(var, cont_vars)]
+        )
+      
     })
     
     output$baseline_cont_table <- renderDataTable({
