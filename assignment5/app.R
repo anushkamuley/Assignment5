@@ -86,7 +86,18 @@ ui <- dashboardPage(
             br(),
             dataTableOutput("baseline_cont_table")
           )
-        )))))
+        ),
+        fluidRow(
+          box(
+            title = "Categorical Variable Summary",
+            width = 12,
+            solidHeader = TRUE,
+            plotOutput("baseline_cat_plot"),
+            br(),
+            dataTableOutput("baseline_cat_table")
+          )
+        )
+      ))))
 server <- function(input, output, session) {
   
 }
