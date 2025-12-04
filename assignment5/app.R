@@ -60,7 +60,24 @@ ui <- dashboardPage(
             plotOutput("ef_hist")
           )
         )
-      ))))
+      ),
+      tabItem(
+        tabName = "baseline",
+        fluidRow(
+          box(
+            title = "Filters",
+            width = 3,
+            solidHeader = TRUE,
+            status = "warning",
+            selectInput("baseline_trt", "Treatment Group:",
+                        choices = c("Both", "Placebo", "Digoxin")),
+            selectInput("baseline_sex", "Sex:",
+                        choices = c("Both", "Male", "Female")),
+            selectInput("baseline_cont", "Continuous Variable:",
+                        choices = NULL),
+            selectInput("baseline_cat", "Categorical Variable:",
+                        choices = NULL)
+          ))))))
 server <- function(input, output, session) {
   
 }
