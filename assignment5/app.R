@@ -25,6 +25,41 @@ dashboardPage(
       menuItem("Relationships", tabName = "relationships", icon = icon("project-diagram")),
       menuItem("Data Table", tabName = "data", icon = icon("table"))
     )
-  )
+  ),
+  dashboardBody(
+    tabItems(
+      
+      tabItem(
+        tabName = "about",
+        fluidRow(
+          valueBoxOutput("n_patients"),
+          valueBoxOutput("pct_treat"),
+          valueBoxOutput("mean_age")
+        ),
+        fluidRow(
+          box(
+            title = "About the DIG Trial",
+            width = 12,
+            status = "primary",
+            solidHeader = TRUE,
+            p("This Shiny application provides an interactive exploration of the Digitalis Investigation Group (DIG) Trial dataset.",
+              "Use the menu to explore baseline characteristics, outcomes, and relationships between variables.")
+          )
+        ),
+        fluidRow(
+          box(
+            title = "Age Distribution",
+            width = 6,
+            solidHeader = TRUE,
+            plotOutput("age_hist")
+          ),
+          box(
+            title = "Ejection Fraction Distribution",
+            width = 6,
+            solidHeader = TRUE,
+            plotOutput("ef_hist")
+          )
+        )
+      ))))
   
 shinyApp(ui = ui, server = server)
