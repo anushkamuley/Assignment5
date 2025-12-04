@@ -34,7 +34,9 @@ ui <- dashboardPage(
         fluidRow(
           valueBoxOutput("n_patients"),
           valueBoxOutput("pct_treat"),
-          valueBoxOutput("mean_age")
+          valueBoxOutput("mean_age"),
+          valueBoxOutput("death_rate"),
+          valueBoxOutput("survival_rate")
         ),
         fluidRow(
           box(
