@@ -14,7 +14,36 @@ library(dplyr)
 library(ggplot2)
 library(DT)
 
-dig <- read.csv("DIG.csv")
+dig <- read.csv("DIG.csv") %>%
+  mutate(
+    SEX = factor(SEX, levels = c(1, 2), labels = c("Male", "Female")),
+    RACE = factor(RACE, levels = c(1, 2), labels = c("White", "Nonwhite")),
+    TRTMT = factor(TRTMT, levels = c(0, 1), labels = c("Placebo", "Digoxin"))
+  )
+
+cont_vars <- c(
+  "Age" = "AGE",
+  "BMI" = "BMI",
+  "Ejection fraction (%)" = "EJF_PER",
+  "Heart rate (bpm)" = "HEARTRTE",
+  "Systolic BP (mmHg)" = "SYSBP",
+  "Diastolic BP (mmHg)" = "DIABP"
+)
+
+cat_vars <- c(
+  "Sex" = "SEX",
+  "Race" = "RACE",
+  "NYHA class" = "FUNCTCLS",
+  "Diabetes" = "DIABETES",
+  "Hypertension" = "HYPERTEN"
+)
+
+outcome_vars <- c(
+  "Death (any cause)" = "DEATH",
+  "Any hospitalization" = "HOSP",
+  "CVD hospitalization" = "CVD",
+  "HF hospitalization" = "WHF"
+)
 
 ui <- dashboardPage(
   dashboardHeader(title = "DIG Trial Explorer"),
