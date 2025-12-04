@@ -14,6 +14,8 @@ library(dplyr)
 library(ggplot2)
 library(DT)
 
+dig <- read.csv("DIG.csv")
+
 ui <- dashboardPage(
   dashboardHeader(title = "DIG Trial Explorer"),
   
