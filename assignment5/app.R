@@ -77,7 +77,16 @@ ui <- dashboardPage(
                         choices = NULL),
             selectInput("baseline_cat", "Categorical Variable:",
                         choices = NULL)
-          ))))))
+          ),
+          box(
+            title = "Continuous Variable Summary",
+            width = 9,
+            solidHeader = TRUE,
+            plotOutput("baseline_cont_plot"),
+            br(),
+            dataTableOutput("baseline_cont_table")
+          )
+        )))))
 server <- function(input, output, session) {
   
 }
