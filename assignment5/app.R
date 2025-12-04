@@ -97,7 +97,10 @@ ui <- dashboardPage(
             dataTableOutput("baseline_cat_table")
           )
         )
-      ))))
+      )
+    )
+  )
+)
 server <- function(input, output, session) {
   
 }
