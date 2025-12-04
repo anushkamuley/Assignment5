@@ -122,6 +122,29 @@ ui <- dashboardPage(
             dataTableOutput("outcome_table")
           )
         )
+      ),
+      tabItem(
+        tabName = "relationships",
+        fluidRow(
+          box(
+            title = "Variable Selection",
+            width = 3,
+            solidHeader = TRUE,
+            status = "warning",
+            selectInput("xvar", "X Variable:", choices = NULL),
+            selectInput("yvar", "Y Variable:", choices = NULL),
+            selectInput("rel_colour", "Colour By:",
+                        choices = c("None", "Treatment" = "TRTMT", "Sex" = "SEX"),
+                        selected = "TRTMT"),
+            checkboxInput("add_smooth", "Add Smooth Trend Line", TRUE)
+          ),
+          box(
+            title = "Scatterplot",
+            width = 9,
+            solidHeader = TRUE,
+            plotOutput("rel_plot")
+          )
+        )
       )
     )
   )
