@@ -97,6 +97,31 @@ ui <- dashboardPage(
             dataTableOutput("baseline_cat_table")
           )
         )
+      ),
+      tabItem(
+        tabName = "outcomes",
+        fluidRow(
+          box(
+            title = "Outcome Settings",
+            width = 3,
+            solidHeader = TRUE,
+            status = "warning",
+            selectInput("outcome_var", "Outcome:",
+                        choices = NULL),
+            selectInput("outcome_group", "Group by:",
+                        choices = c("Treatment" = "TRTMT",
+                                    "Sex" = "SEX",
+                                    "NYHA Class" = "FUNCTCLS"))
+          ),
+          box(
+            title = "Outcome Rates by Group",
+            width = 9,
+            solidHeader = TRUE,
+            plotOutput("outcome_plot"),
+            br(),
+            dataTableOutput("outcome_table")
+          )
+        )
       )
     )
   )
