@@ -204,6 +204,25 @@ ui <- dashboardPage(
         color = "yellow"
       )
     })
+    output$death_rate <- renderValueBox({
+      dr <- mean(dig$DEATH == 1, na.rm = TRUE) * 100
+      valueBox(
+        value = sprintf("%.1f%%", dr),
+        subtitle = "Death Rate",
+        icon = icon("skull-crossbones"),
+        color = "red"
+      )
+    })
+    
+    output$survival_rate <- renderValueBox({
+      sr <- (1 - mean(dig$DEATH == 1, na.rm = TRUE)) * 100
+      valueBox(
+        value = sprintf("%.1f%%", sr),
+        subtitle = "Survival Rate",
+        icon = icon("heart"),
+        color = "green"
+      )
+    })
     output$age_hist <- renderPlot({
       ggplot(dig, aes(x = AGE)) +
         geom_histogram(bins = 30) +
