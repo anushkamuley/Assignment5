@@ -347,11 +347,13 @@ ui <- dashboardPage(
     })
     
     outcome_data <- reactive({
+      req(input$outcome_var)
       dig %>%
         filter(!is.na(.data[[input$outcome_var]]))
     })
     
     output$outcome_plot <- renderPlot({
+      req(input$outcome_var, input$outcome_group)
       ggplot(outcome_data(),
              aes(x = .data[[input$outcome_group]],
                  fill = .data[[input$outcome_var]])) +
@@ -363,6 +365,7 @@ ui <- dashboardPage(
     })
     
     output$outcome_table <- renderDataTable({
+      req(input$outcome_var, input$outcome_group)
       outcome_data() %>%
         count(.data[[input$outcome_group]], .data[[input$outcome_var]]) %>%
         group_by(.data[[input$outcome_group]]) %>%
@@ -370,6 +373,7 @@ ui <- dashboardPage(
     })
     
     output$rel_plot <- renderPlot({
+      req(input$xvar, input$yvar)
       xvar <- input$xvar
       yvar <- input$yvar
       colour_var <- input$rel_colour
@@ -387,8 +391,8 @@ ui <- dashboardPage(
       }
       
       p + labs(
-        x = names(cont_vars)[cont_vars == xvar],
-        y = names(cont_vars)[cont_vars == yvar]
+        x = names(cont_vars)[match(xvar, cont_vars)],
+        y = names(cont_vars)[match(yvar, cont_vars)]
       )
     })
     
@@ -396,9 +400,5 @@ ui <- dashboardPage(
       datatable(dig, options = list(pageLength = 25))
     })
   }
-  
-  
-  
-  shinyApp(ui = ui, server = server)
 
 shinyApp(ui, server)
